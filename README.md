@@ -3,3 +3,9 @@
 
 ## Multi AZ Diagram
 <img width="801" height="742" alt="Image" src="https://github.com/user-attachments/assets/477954f2-9b30-44d6-b783-5dfdb3c8df4a" />
+
+## Setup
+install dependencies for the NuxtJS app:
+```
+npm install
+```
