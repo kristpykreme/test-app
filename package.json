@@ -2,7 +2,9 @@
   "name": "test-app",
   "type": "module",
   "private": true,
-  "prisma": { "seed": "tsx prisma/seed.base.ts" },
+  "prisma": {
+    "seed": "tsx prisma/seed.base.ts"
+  },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -21,6 +23,7 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/node": "^24.7.0",
     "prisma": "^6.16.3",
     "tsx": "^4.20.6"
