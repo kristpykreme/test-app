@@ -2,16 +2,27 @@
   "name": "test-app",
   "type": "module",
   "private": true,
+  "prisma": { "seed": "tsx prisma/seed.base.ts" },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "db:seed": "prisma db seed",
+    "db:seed:admin": "ALLOW_ADMIN_BOOTSTRAP=1 tsx prisma/seed.admin.ts"
   },
   "dependencies": {
+    "@prisma/client": "^6.16.3",
+    "bcrypt": "^6.0.0",
+    "jsonwebtoken": "^9.0.2",
     "nuxt": "^4.1.2",
     "vue": "^3.5.22",
     "vue-router": "^4.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.0",
+    "prisma": "^6.16.3",
+    "tsx": "^4.20.6"
   }
 }
