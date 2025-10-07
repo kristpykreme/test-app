@@ -1,34 +1,41 @@
 import jwt from "jsonwebtoken";
 import { getCookie, setCookie, type H3Event } from "h3";
 
-const COOKIE = "session";
 type Payload = { sub: number; name: string; role: string };
+const COOKIE = "session";
 const secret = () => (process.env.JWT_SECRET || "dev-secret") as string;
 
-export const sign = (p: Payload) =>
-  jwt.sign(p, secret(), { algorithm: "HS256", expiresIn: "7d" });
+const baseCookie = (event: H3Event) => {
+  const isProd = process.env.NODE_ENV === "production";
+  return {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: "lax" as const,
+    path: "/",
+  };
+};
 
-export const verify = (t: string): Payload =>
-  jwt.verify(t, secret()) as unknown as Payload;
+export function sign(p: Payload) {
+  return jwt.sign(p, secret(), { algorithm: "HS256", expiresIn: "7d" });
+}
+
+export function verify(token: string): Payload {
+  return jwt.verify(token, secret()) as unknown as Payload;
+}
 
 export function setSessionCookie(event: H3Event, token: string) {
-  const isProd = process.env.NODE_ENV === "production";
   setCookie(event, COOKIE, token, {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 7,
+    ...baseCookie(event),
+    maxAge: 60 * 60 * 24 * 7, // 7 days
   });
 }
+
 export function clearSessionCookie(event: H3Event) {
-  const isProd = process.env.NODE_ENV === "production";
   setCookie(event, COOKIE, "", {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: "lax",
-    path: "/",
+    ...baseCookie(event),
     maxAge: 0,
+    expires: new Date(0), // <- ensure removal
   });
 }
+
 export const readSession = (e: H3Event) => getCookie(e, COOKIE);
