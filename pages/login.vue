@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { navigateTo, useFetch } from "nuxt/app";
+import { navigateTo, refreshNuxtData, useFetch } from "nuxt/app";
 import { ref } from "vue";
 type LoginResponse = {
   ok: boolean;
@@ -14,19 +14,19 @@ const errorMsg = ref("");
 const submit = async () => {
   errorMsg.value = "";
   loading.value = true;
-  const { error } = await useFetch<LoginResponse>("/api/auth/login", {
-    method: "POST",
-    body: { name: name.value, password: password.value },
-    credentials: "include",
-    retry: false,
-  });
-  loading.value = false;
-  if (error.value) {
-    errorMsg.value =
-      error.value.statusMessage || "Invalid username or password";
-    return;
+  try {
+    await $fetch("/api/auth/login", {
+      method: "POST",
+      body: { name: name.value, password: password.value },
+      credentials: "include",
+    });
+    await Promise.all([refreshNuxtData("me"), refreshNuxtData("users")]);
+    await navigateTo("/", { replace: true });
+  } catch (e: any) {
+    errorMsg.value = e?.statusMessage || "Invalid username or password";
+  } finally {
+    loading.value = false;
   }
-  await navigateTo("/", { replace: true });
 };
 </script>
 
