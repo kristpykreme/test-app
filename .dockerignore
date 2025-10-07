@@ -1,0 +1,13 @@
+node_modules
+.nitro
+.nuxt
+.output
+dist
+coverage
+.env*
+Dockerfile*
+docker-compose*.yml
+.git
+.gitignore
+.vscode
+*.log
